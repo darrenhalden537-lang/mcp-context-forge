@@ -401,16 +401,20 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         #   All HTMX hx-vals="js:{...}" have been migrated to htmx:configRequest handlers.
         #   All hx-on:* event handlers have been migrated to addEventListener.
         #   Alpine.js has been migrated to @alpinejs/csp build (no eval required).
+        #   Tailwind CSS uses precompiled CSS (no eval required).
         #
-        # style-src: No unsafe-inline. All inline styles use nonces or external CSS.
+        # style-src: Nonce-based for <style> blocks, 'unsafe-inline' for style attributes.
         #   Nonce added for inline <style> blocks in admin.html that define
         #   HTMX indicator and team management styles.
+        #   'unsafe-inline' is required for inline style attributes (style="...")
+        #   used for animation delays, positioning, and dynamic styling in login/admin pages.
+        #   This is the minimum required for the UI animations to work with strict CSP.
         if not skip_csp_for_docs:
             csp_directives = [
                 "default-src 'self'",
-                f"script-src-elem 'self' 'nonce-{csp_nonce}' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com",
+                f"script-src-elem 'self' 'nonce-{csp_nonce}' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com",
                 "script-src 'self'",
-                f"style-src 'self' 'nonce-{csp_nonce}' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
+                f"style-src 'self' 'unsafe-inline' 'nonce-{csp_nonce}' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
                 "img-src 'self' data: https:",
                 "font-src 'self' data: https://cdnjs.cloudflare.com",
                 "connect-src 'self' ws: wss: https:",
