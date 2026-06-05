@@ -55,7 +55,7 @@ async def test_auth_method_propagation_from_plugin():
     # Create mock credentials
     mock_credentials = HTTPAuthorizationCredentials(
         scheme="Bearer",
-        credentials="test-token-123",
+        credentials="test-token-123",  # pragma: allowlist secret
     )
 
     # Mock the plugin manager to return a successful auth with metadata
@@ -131,8 +131,8 @@ async def test_auth_method_in_user_context():
     mock_user.full_name = "Test User"
     mock_user.is_admin = False
 
-    # Mock get_current_user to return the mock user
-    with patch("mcpgateway.middleware.rbac.get_current_user", new_callable=AsyncMock) as mock_get_user:
+    # Mock validate_token_user to return the mock user
+    with patch("mcpgateway.auth.validate_token_user", new_callable=AsyncMock) as mock_get_user:
         mock_get_user.return_value = mock_user
 
         # Call get_current_user_with_permissions

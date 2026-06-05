@@ -29,16 +29,14 @@ import pytest
 
 # First-Party
 from mcpgateway.config import settings
-from mcpgateway.utils.create_jwt_token import _create_jwt_token
 
 # Local
+from tests.helpers.auth import _UNSET, make_playwright_api_context, make_test_jwt
 from ..pages.login_page import LoginPage
 from .conftest import BASE_URL
 
 pytestmark = [pytest.mark.ui, pytest.mark.e2e, pytest.mark.playwright_security_e2e]
-
-_UNSET = object()
-TEST_PASSWORD = "SecureTestPass123!"
+TEST_PASSWORD = "SecureP@ssw0rd!Test2026"  # pragma: allowlist secret
 
 
 def _extract_servers(response_json: Any) -> list[dict[str, Any]]:
@@ -64,26 +62,18 @@ def _make_jwt(
     exp: int | None = None,
     scopes: dict[str, Any] | None = None,
 ) -> str:
-    payload: dict[str, Any] = {"sub": email}
-    if teams is not _UNSET:
-        payload["teams"] = teams
-    if exp is not None:
-        payload["exp"] = exp
-    return _create_jwt_token(
-        payload,
-        user_data={"email": email, "is_admin": is_admin, "auth_provider": "local"},
+    extra_payload = {"exp": exp} if exp is not None else None
+    return make_test_jwt(
+        email,
+        is_admin=is_admin,
+        teams=teams,
         scopes=scopes,
+        extra_payload=extra_payload,
     )
 
 
 def _api_context(playwright, token: str, extra_headers: dict[str, str] | None = None) -> APIRequestContext:
-    headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
-    if extra_headers:
-        headers.update(extra_headers)
-    return playwright.request.new_context(
-        base_url=BASE_URL,
-        extra_http_headers=headers,
-    )
+    return make_playwright_api_context(playwright, BASE_URL, token, extra_headers=extra_headers)
 
 
 def _set_jwt_cookie(context: BrowserContext, token: str) -> None:
@@ -180,14 +170,14 @@ def email_logged_in_page(context: BrowserContext) -> Page:
         pytest.skip("Email login form is unavailable in this environment.")
 
     admin_email = os.getenv("PLATFORM_ADMIN_EMAIL", "admin@example.com")
-    candidate_passwords = [os.getenv("PLATFORM_ADMIN_NEW_PASSWORD", "Changeme123!"), os.getenv("PLATFORM_ADMIN_PASSWORD", "changeme")]
+    candidate_passwords = [os.getenv("PLATFORM_ADMIN_NEW_PASSWORD", "SV^cB9Qx3!em48fy$1VhjxkW"), os.getenv("PLATFORM_ADMIN_PASSWORD", "5S1Nd8z$Ivb6N%Lsj^okvVF6")]
 
     login_succeeded = False
     for password in candidate_passwords:
         login_page.submit_login(admin_email, password)
 
         if login_page.is_on_change_password_page():
-            desired_password = os.getenv("PLATFORM_ADMIN_NEW_PASSWORD", "Changeme123!")
+            desired_password = os.getenv("PLATFORM_ADMIN_NEW_PASSWORD", "SV^cB9Qx3!em48fy$1VhjxkW")
             login_page.submit_password_change(password, desired_password)
 
         if "/admin/login" not in page.url and "/admin/change-password-required" not in page.url:
@@ -584,7 +574,7 @@ class TestPlaywrightSecurityE2EScopeAndRBAC:
                 "/auth/email/admin/users",
                 data={
                     "email": f"forbidden-{uuid.uuid4().hex[:8]}@example.com",
-                    "password": "SecurePass123!",
+                    "password": "SecureP@ssw0rd!Test2026",  # pragma: allowlist secret
                     "full_name": "Forbidden User",
                 },
             )
