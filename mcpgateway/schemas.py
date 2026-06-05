@@ -581,6 +581,7 @@ class ToolCreate(BaseModel):
         default_factory=dict,
         description="Tool annotations for behavior hints (title, readOnlyHint, destructiveHint, idempotentHint, openWorldHint)",
     )
+    extension_metadata: Optional[Dict[str, Any]] = Field(default=None, alias="extensionMetadata", description="Extension-specific metadata keyed by extension identifier")
     jsonpath_filter: Optional[str] = Field(default="", description="JSON modification filter")
     auth: Optional[AuthenticationValues] = Field(None, description="Authentication credentials (Basic or Bearer Token or custom headers) if required")
     gateway_id: Optional[str] = Field(None, description="id of gateway for the tool")
@@ -1147,6 +1148,7 @@ class ToolUpdate(BaseModelWithConfigDict):
     input_schema: Optional[Dict[str, Any]] = Field(None, description="JSON Schema for validating tool parameters")
     output_schema: Optional[Dict[str, Any]] = Field(None, description="JSON Schema for validating tool output")
     annotations: Optional[Dict[str, Any]] = Field(None, description="Tool annotations for behavior hints")
+    extension_metadata: Optional[Dict[str, Any]] = Field(default=None, alias="extensionMetadata", description="Extension-specific metadata keyed by extension identifier")
     jsonpath_filter: Optional[str] = Field(None, description="JSON path filter for rpc tool calls")
     auth: Optional[AuthenticationValues] = Field(None, description="Authentication credentials (Basic or Bearer Token or custom headers) if required")
     gateway_id: Optional[str] = Field(None, description="id of gateway for the tool")
@@ -1593,6 +1595,7 @@ class ToolRead(BaseModelWithConfigDict):
     input_schema: Dict[str, Any]
     output_schema: Optional[Dict[str, Any]] = Field(None)
     annotations: Optional[Dict[str, Any]]
+    extension_metadata: Optional[Dict[str, Any]] = Field(default=None, alias="extensionMetadata", description="Extension-specific metadata keyed by extension identifier")
     jsonpath_filter: Optional[str]
     auth: Optional[AuthenticationValues]
     created_at: datetime
@@ -1842,6 +1845,7 @@ class ResourceCreate(BaseModel):
     uri_template: Optional[str] = Field(None, description="URI template for parameterized resources")
     content: Union[str, bytes] = Field(..., description="Resource content (text or binary)")
     tags: Optional[List[str]] = Field(default_factory=list, description="Tags for categorizing the resource")
+    extension_metadata: Optional[Dict[str, Any]] = Field(default=None, alias="extensionMetadata", description="Extension-specific metadata keyed by extension identifier")
 
     # Team scoping fields
     team_id: Optional[str] = Field(None, description="Team ID for resource organization")
@@ -1989,6 +1993,7 @@ class ResourceUpdate(BaseModelWithConfigDict):
     uri_template: Optional[str] = Field(None, description="URI template for parameterized resources")
     content: Optional[Union[str, bytes]] = Field(None, description="Resource content (text or binary)")
     tags: Optional[List[str]] = Field(None, description="Tags for categorizing the resource")
+    extension_metadata: Optional[Dict[str, Any]] = Field(default=None, alias="extensionMetadata", description="Extension-specific metadata keyed by extension identifier")
 
     # Team scoping fields
     team_id: Optional[str] = Field(None, description="Team ID for resource organization")
@@ -2132,6 +2137,7 @@ class ResourceRead(BaseModelWithConfigDict):
     enabled: bool
     metrics: Optional[ResourceMetrics] = Field(None, description="Resource metrics (may be None in list operations)")
     tags: List[str] = Field(default_factory=list, description="Tags for categorizing the resource")
+    extension_metadata: Optional[Dict[str, Any]] = Field(default=None, alias="extensionMetadata", description="Extension-specific metadata keyed by extension identifier")
 
     # Comprehensive metadata for audit tracking
     created_by: Optional[str] = Field(None, description="Username who created this entity")
