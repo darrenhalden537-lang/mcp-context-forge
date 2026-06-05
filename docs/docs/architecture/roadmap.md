@@ -266,7 +266,7 @@
     - ⏳ [**#2286**](https://github.com/IBM/mcp-context-forge/issues/2286) - [EPIC][UI]: Visual polish and UI consistency
     - ⏳ [**#2300**](https://github.com/IBM/mcp-context-forge/issues/2300) - [EPIC][PERFORMANCE]: UI caching strategy and CDN
     - ⏳ [**#2312**](https://github.com/IBM/mcp-context-forge/issues/2312) - [EPIC][UI]: Notification bell and real-time alerts UI
-    - ⏳ [**#2527**](https://github.com/IBM/mcp-context-forge/issues/2527) - [EPIC][MCP-APPS]: MCP Apps Support for ContextForge
+    - ⏳ [**#2527**](https://github.com/IBM/mcp-context-forge/issues/2527) - [EPIC][MCP-APPS]: MCP Apps Support for ContextForge. Initial extension substrate documented in [MCP Apps Extension](mcp-apps.md).
     - ⏳ [**#2603**](https://github.com/IBM/mcp-context-forge/issues/2603) - [EPIC][SECURITY]: ML-Based Behavioral Fingerprinting for Issue #257
     - ⏳ [**#2823**](https://github.com/IBM/mcp-context-forge/issues/2823) - [EPIC][WEBMCP]: WebMCP Integration — Browser-Native Tool Registration and Gateway Bridge
 
